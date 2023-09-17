@@ -1,3 +1,8 @@
+
+'''
+This file defines a class case, which is one instance of the Warehouse location problem with I warehouses and J stores.
+'''
+
 # Importing the required libraries
 import random as rd
 from shapely.geometry import Polygon, Point
@@ -65,6 +70,14 @@ class Case:
             y = rd.uniform(subzone.bounds[1], subzone.bounds[3])
             location = Location(x, y)
             location.determine_zone(self.celeste_polygon, self.verde_polygon, self.tiendas_polygon)
+            if (J > 8):
+                cv = rd.randint(2, int(J/4))
+                cc = rd.randint(int(J/4), int(J/2))
+                location.determine_capacity(cv, cc)
+            else:
+                cv = 2
+                cc = rd.randint(int(J/4), int(J/2))
+                location.determine_capacity(cv, cc)
             if location.zone in (Zone.CELESTE, Zone.VERDE):
                 self.I_locations.append(location)
 
@@ -74,6 +87,14 @@ class Case:
             y = rd.uniform(self.tiendas_subpolygon.bounds[1], self.tiendas_subpolygon.bounds[3])
             location = Location(x, y)
             location.determine_zone(self.celeste_polygon, self.verde_polygon, self.tiendas_polygon)
+            if (J > 8):
+                cv = rd.randint(2, int(J/4))
+                cc = rd.randint(int(J/4), int(J/2))
+                location.determine_capacity(cv, cc)
+            else:
+                cv = 2
+                cc = rd.randint(int(J/4), int(J/2))
+                location.determine_capacity(cv, cc)
             if location.zone == Zone.TIENDAS:
                 self.J_locations.append(location)
 
@@ -119,10 +140,9 @@ class Case:
         # Count the number of locations in each zone
         count_celeste_verde = sum(1 for location in self.locations if location.zone in (Zone.CELESTE, Zone.VERDE))
         count_tiendas = sum(1 for location in self.locations if location.zone == Zone.TIENDAS)
-        count_none = sum(1 for location in self.locations if location.zone == Zone.NONE)
 
         # Add label to diplay count_celeste_verde and count_tiendas
-        ax.text(0.5, 1.1, f"I = {count_celeste_verde}, J = {count_tiendas}, NONE = {count_none}", transform=ax.transAxes, horizontalalignment='center')
+        ax.text(0.5, 1.1, f"I = {count_celeste_verde}, J = {count_tiendas}", transform=ax.transAxes, horizontalalignment='center')
 
         # Show the plot
         plt.grid()
@@ -177,11 +197,8 @@ class Case:
             config = Config()
             cost_i = []
             for j in range (len(self.J_locations)):
-                if (self.I_locations[i].zone == Zone.CELESTE):
-                    cost_i.append(1.25 * self.distances[i][j] + config.costceleste)
-
-                elif (self.I_locations[i].zone == Zone.VERDE):
-                    cost_i.append(1.25 * self.distances[i][j] + config.costverde)
+                if (self.I_locations[i].zone == Zone.CELESTE or self.I_locations[i].zone == Zone.VERDE):
+                    cost_i.append(1.25 * self.distances[i][j] + config.cost)
                 else:
                     raise ValueError("Invalid zone")
             self.cost.append(cost_i)
@@ -192,3 +209,13 @@ class Case:
         for i in range(len(self.I_locations)):
             for j in range (len(self.J_locations)):
                 print(f"I:{i} J:{j} c: {self.cost[i][j]}")
+    
+    def printCapacity(self):
+        # Making a function to determine the capacity between all the points in self.location and appending it to a self.cost
+        i = 0
+        print(f"Capacity:")
+        for location in self.locations:
+            config = Config()
+            print(f"Location {i}, Zone: {location.zone.name}, capacity: {location.capacity}")
+            i += 1
+        

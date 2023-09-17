@@ -1,27 +1,32 @@
-from shapely.geometry import Polygon, Point
-from Location import Location
-import matplotlib.pyplot as plt
-from enums import Zone
 
+'''
+This file defines a class Config, which will define the configuration for the project, based on the task description "Proyecto_FIO_OPTI_2023S2_v4.pdf"
+'''
 # Importing the required libraries
+from shapely.geometry import Polygon, Point
+import matplotlib.pyplot as plt
 import time
 import random as rd
+
+# Importing the required classes
+from enums import Zone
+
+
 
 class Config:
     def __init__(self):
         #In config we will define the parameters for the problem
         # Making sure that random is random
+
         timestamp = int(time.time())
         rd.seed(timestamp)
-        self.n = 100 #Numero de tiendas
-        self.costceleste = rd.randint(1000, 1500)
-        self.costverde = rd.randint(1500, 4000)
-        self.cv = rd.randint(2, self.n/4) #Cantidad en zona verde
-        self.cc = rd.randint(self.n/4, self.n/2) #Cantidad en zona celeste
-        self.o = rd.randint(20, 70) #Emisiones por operacion
+        self.cost = rd.randint(1000, 4000)
+        self.cv = None # Cantidad en zona verde
+        self.cc = None # Cantidad en zona celeste
+        self.o = rd.randint(20, 70) # Emisiones por operacion
         self.instances = []
 
-        # Define the list of limits. Each limit is a tuple of the form (x_min, x_max, y_min, y_max)
+        # Define the list of limits, defined in "Tabla de Instancias". Each limit is a tuple of the form (x_min, x_max, y_min, y_max)
         self.limitsInstances = [
             (5, 7, 6, 10),
             (8, 12, 10, 20),

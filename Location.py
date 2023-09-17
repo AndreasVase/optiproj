@@ -1,5 +1,14 @@
-from enums import Zone
+'''
+This python file defines a Location class, which will be used to define locations: warehouses and shops.
+
+'''
+
+# Importing the required libraries
 from shapely.geometry import Point
+
+# Importing the required classes
+from enums import Zone
+from Config import Config
 
 class Location:
     def __init__(self, x, y):
@@ -8,6 +17,7 @@ class Location:
             self.y = y
             self.point = Point(self.x, self.y)
             self.zone = None  # Initialize the zone as None
+            self.capacity = None
 
     def determine_zone(self, celeste_polygon, verde_polygon, tiendas_polygon):
         point = Point(self.x, self.y)
@@ -22,7 +32,17 @@ class Location:
         elif in_celeste:
             self.zone = Zone.CELESTE
         else:
-             self.zone = Zone.NONE
-
+            raise Exception("All locations need to have a zone")
+    
+    def determine_capacity(self, cv, cc):
+        if self.zone == Zone.VERDE:
+            self.capacity = cv
+        elif self.zone == Zone.CELESTE:
+            self.capacity = cc
+        elif self.zone == Zone.TIENDAS:
+            self.capacity = 1
+    
+        
+             
     def __str__(self):
         return f"Location({self.x}, {self.y}), {self.zone.name}"

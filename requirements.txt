@@ -1,0 +1,8 @@
+euclidean==1.0.0b5
+matplotlib==3.8.0
+multipledispatch==1.0.0
+numpy==1.25.2
+scipy==1.11.2
+shapely==2.0.1
+six==1.16.0
+sortedcontainers==2.4.0

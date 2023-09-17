@@ -1,11 +1,9 @@
 '''
-This python file is the main file for the project. It will be used to run the project. 
-Param:
+This python file is the main file for the project, which will be used to run the project.
+
 '''
 
 # Importing the required libraries
-import os 
-import sys
 import time
 import random as rd
 
@@ -31,18 +29,11 @@ for instance in config.instances:
     case.printEmissions()
     case.determineCost()
     case.printCost()
+    case.getMap()
+    case.printCapacity()
     i += 1
     print("\n")
+
+    # Use the code below to only run one instance, for illustrative purposes
     if (i == 2):
         break
-
-
-
-
-
-
-# for location in locations:
-#     location.determine_zone(celeste_polygon, verde_polygon, tiendas_polygon)
-#     print(location)
-# for location in locations:
-#     location.determine_zone(celeste_polygon, verde_polygon, tiendas_polygon)
