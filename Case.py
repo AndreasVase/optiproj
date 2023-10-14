@@ -38,7 +38,7 @@ class Case:
         self.celeste_polygon = Polygon(self.celeste_coords)
         self.verde_polygon = Polygon(self.verde_coords)
         self.tiendas_polygon = Polygon(self.tiendas_coords)
-
+        
         # Define the coordinates for the smaller zones within Celeste
         celeste_zones = [
             [(0, 0), (0, 300), (300, 300), (300, 0)],
@@ -69,7 +69,10 @@ class Case:
     
     def generate_locations(self, I, J):
         # Generate I locations inside Celeste or Verde
-        self.cv = rd.randint(2, int(J/4))
+        if (J < 8):
+            self.cv = 2
+        else:
+            self.cv = rd.randint(2, int(J/4))
         self.cc = rd.randint(int(J/4), int(J/2))
         while len(self.I_locations) < I:
             subzone = rd.choice(self.celeste_subpolygons + self.verde_subpolygons)
@@ -170,12 +173,14 @@ class Case:
     
     def determineEmissions(self):
         # Making a function to determine the emissions between all the points in self.location and appending it to a self.emissions
+        numerator = 0
         for i in self.distances:
             emissions_i = []
             for d in i:
-                emission = d*1.5 + rd.randint(20, 70) # Emisiones per operacion
+                emission = d*1.5 + self.I_locations[numerator].emission # Emisiones per operacion
                 emissions_i.append(emission)
             self.emissions.append(emissions_i)
+            numerator += 1
         return self.emissions
     
     def printEmissions(self):
@@ -209,4 +214,44 @@ class Case:
         for location in self.locations:
             print(f"Location {i}, Zone: {location.zone.name}, capacity: {location.capacity}")
             i += 1
+    
+    def toMiniZinc(self):
+        txt = 'I = {};\nJ = {};\nC = {};\nCV = {};\nCC = {};\n'.format(len(self.I_locations), len(self.J_locations), self.costinstallation, self.cv, self.cc)
         
+        Oi = []
+        for i in self.I_locations:
+            Oi.append(i.emission)
+        txt += 'Oi = {}\n'.format(Oi)
+
+        Vi = []
+        for i in self.I_locations:
+            if i.zone == Zone.VERDE:
+                Vi.append(1)
+            else:
+                Vi.append(0)
+        txt += 'Vi = {}\n'.format(Vi)
+            
+        txt += 'Dij = \n[\n'
+        for i in range(len(self.I_locations)):
+            txt += '|'
+            for j in range(len(self.J_locations)):
+                txt += str(self.distances[i][j])
+                if j != len(self.J_locations) - 1:
+                    txt += ', '
+            txt += '\n'
+        txt += '];\n'
+
+        txt += 'Eij = \n[\n'
+        for i in range(len(self.I_locations)):
+            txt += '|'
+            for j in range(len(self.J_locations)):
+                txt += str(self.emissions[i][j])
+                if j != len(self.J_locations) - 1:
+                    txt += ', '
+            txt += '\n'
+        txt += '];\n'
+        print(txt)
+
+        
+
+

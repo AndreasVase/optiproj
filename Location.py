@@ -9,6 +9,8 @@ from shapely.geometry import Point
 # Importing the required classes
 from enums import Zone
 from Config import Config
+import random as rd
+import time
 
 class Location:
     def __init__(self, x, y):
@@ -18,6 +20,8 @@ class Location:
             self.point = Point(self.x, self.y)
             self.zone = None  # Initialize the zone as None
             self.capacity = None
+            self.emission = rd.randint(20, 70)
+
 
     def determine_zone(self, celeste_polygon, verde_polygon, tiendas_polygon):
         point = Point(self.x, self.y)
