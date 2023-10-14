@@ -9,8 +9,8 @@ import random as rd
 
 # Importing the required classes
 from enums import Zone
-from Location import Location
 from Case import Case
+from Location import Location
 from Config import Config
 
 config = Config()
@@ -29,7 +29,7 @@ for instance in config.instances:
     case.printEmissions()
     case.determineCost()
     case.printCost()
-    case.getMap()
+    # case.getMap()
     case.printCapacity()
     i += 1
     print("\n")

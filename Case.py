@@ -10,22 +10,27 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon as mplPolygon
 import numpy as np
 from scipy.spatial.distance import euclidean
-
+import time
 # Importing the required functions
 from enums import Zone
 from Location import Location
 from Config import Config
+
 class Case:
     def __init__(self):
-        # Coordinates to the potential location for the warehouse
-        # Define the coordinates of the three original zones
-        self.config = Config()
+        timestamp = int(time.time())
+        rd.seed(timestamp)
+        self.costinstallation = rd.randint(1000, 4000)
+        self.cv = None # Cantidad en zona verde
+        self.cc = None # Cantidad en zona celeste
         self.locations = []
         self.I_locations = []
         self.J_locations = []
         self.distances = []
         self.emissions = []
         self.cost = []
+        # Coordinates to the potential location for the warehouse
+        # Define the coordinates of the three original zones
         self.celeste_coords = [(0, 0), (0, 600), (600, 600), (600, 0)]
         self.verde_coords = [(100, 100), (100, 500), (500, 500), (500, 100)]
         self.tiendas_coords = [(300 - 75 , 300 - 75 ), (300 - 75, 300 + 75), (300 + 75, 300 + 75), (300 + 75, 300 - 75)]
@@ -64,20 +69,16 @@ class Case:
     
     def generate_locations(self, I, J):
         # Generate I locations inside Celeste or Verde
+        self.cv = rd.randint(2, int(J/4))
+        self.cc = rd.randint(int(J/4), int(J/2))
         while len(self.I_locations) < I:
             subzone = rd.choice(self.celeste_subpolygons + self.verde_subpolygons)
             x = rd.uniform(subzone.bounds[0], subzone.bounds[2])
             y = rd.uniform(subzone.bounds[1], subzone.bounds[3])
             location = Location(x, y)
             location.determine_zone(self.celeste_polygon, self.verde_polygon, self.tiendas_polygon)
-            if (J > 8):
-                cv = rd.randint(2, int(J/4))
-                cc = rd.randint(int(J/4), int(J/2))
-                location.determine_capacity(cv, cc)
-            else:
-                cv = 2
-                cc = rd.randint(int(J/4), int(J/2))
-                location.determine_capacity(cv, cc)
+            location.determine_capacity(self.cv, self.cc)
+        
             if location.zone in (Zone.CELESTE, Zone.VERDE):
                 self.I_locations.append(location)
 
@@ -87,14 +88,7 @@ class Case:
             y = rd.uniform(self.tiendas_subpolygon.bounds[1], self.tiendas_subpolygon.bounds[3])
             location = Location(x, y)
             location.determine_zone(self.celeste_polygon, self.verde_polygon, self.tiendas_polygon)
-            if (J > 8):
-                cv = rd.randint(2, int(J/4))
-                cc = rd.randint(int(J/4), int(J/2))
-                location.determine_capacity(cv, cc)
-            else:
-                cv = 2
-                cc = rd.randint(int(J/4), int(J/2))
-                location.determine_capacity(cv, cc)
+            location.determine_capacity(self.cv, self.cc)
             if location.zone == Zone.TIENDAS:
                 self.J_locations.append(location)
 
@@ -179,8 +173,7 @@ class Case:
         for i in self.distances:
             emissions_i = []
             for d in i:
-                config = Config() # We make sure that we get a random operacion emission for each distance
-                emission = d*1.5 + config.o 
+                emission = d*1.5 + rd.randint(20, 70) # Emisiones per operacion
                 emissions_i.append(emission)
             self.emissions.append(emissions_i)
         return self.emissions
@@ -194,11 +187,10 @@ class Case:
     def determineCost(self):
         # Making a function to determine the cost between all the points in self.location and appending it to a self.cost
         for i in range(len(self.I_locations)):
-            config = Config()
             cost_i = []
             for j in range (len(self.J_locations)):
                 if (self.I_locations[i].zone == Zone.CELESTE or self.I_locations[i].zone == Zone.VERDE):
-                    cost_i.append(1.25 * self.distances[i][j] + config.cost)
+                    cost_i.append(1.25 * self.distances[i][j] + self.costinstallation)
                 else:
                     raise ValueError("Invalid zone")
             self.cost.append(cost_i)
@@ -215,7 +207,6 @@ class Case:
         i = 0
         print(f"Capacity:")
         for location in self.locations:
-            config = Config()
             print(f"Location {i}, Zone: {location.zone.name}, capacity: {location.capacity}")
             i += 1
         

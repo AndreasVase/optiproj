@@ -15,15 +15,9 @@ from enums import Zone
 
 class Config:
     def __init__(self):
-        #In config we will define the parameters for the problem
-        # Making sure that random is random
-
+        # Config is being used to generate the 15 cases with correct instances
         timestamp = int(time.time())
         rd.seed(timestamp)
-        self.cost = rd.randint(1000, 4000)
-        self.cv = None # Cantidad en zona verde
-        self.cc = None # Cantidad en zona celeste
-        self.o = rd.randint(20, 70) # Emisiones por operacion
         self.instances = []
 
         # Define the list of limits, defined in "Tabla de Instancias". Each limit is a tuple of the form (x_min, x_max, y_min, y_max)
@@ -58,3 +52,7 @@ class Config:
             x = rd.randint(x_min, x_max)
             y = rd.randint(y_min, y_max)
             self.instances.append((x, y))
+
+if __name__ == "__main__":
+    deighuahujdasdk = 21 
+    daekjfoajf = 51
