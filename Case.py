@@ -235,7 +235,7 @@ class Case:
         for i in range(len(self.I_locations)):
             txt += '|'
             for j in range(len(self.J_locations)):
-                txt += str(self.distances[i][j])
+                txt += str(int(self.distances[i][j]))
                 if j != len(self.J_locations) - 1:
                     txt += ', '
             txt += '\n'
@@ -245,7 +245,7 @@ class Case:
         for i in range(len(self.I_locations)):
             txt += '|'
             for j in range(len(self.J_locations)):
-                txt += str(self.emissions[i][j])
+                txt += str(int(self.emissions[i][j]))
                 if j != len(self.J_locations) - 1:
                     txt += ', '
             txt += '\n'
@@ -261,9 +261,9 @@ class Case:
         txt += 'int: CC; % Capacity in blue zone\n\n'
 
         txt += 'array[1..I] of int: O_i; % Emissions per operation for each warehouse i\n'
-        txt += 'array[1..I, 1..J] of float: D_ij; % Distance between warehouse i and store j\n'
+        txt += 'array[1..I, 1..J] of int: D_ij; % Distance between warehouse i and store j\n'
         #txt += 'array[1..I, 1..J] of float: T_ij = [1.25 * D_ij[i, j] | i, j in 1..I, j in 1..J]; % Transportation cost\n' Not in use
-        txt += 'array[1..I, 1..J] of float: E_ij; % Transportation emissions\n'
+        txt += 'array[1..I, 1..J] of int: E_ij; % Transportation emissions\n'
         txt += 'array[1..I] of int: V_i; % 1 if warehouse i is in the green zone, 0 if in the blue zone\n'
 
         txt += '\n% Define decision variables\n'
