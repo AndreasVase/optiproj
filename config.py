@@ -16,8 +16,6 @@ from enums import Zone
 class Config:
     def __init__(self):
         # Config is being used to generate the 15 cases with correct instances
-        timestamp = int(time.time())
-        rd.seed(timestamp)
         self.instances = []
 
         # Define the list of limits, defined in "Tabla de Instancias". Each limit is a tuple of the form (x_min, x_max, y_min, y_max)
@@ -43,8 +41,7 @@ class Config:
         # Making a list of tuples based on the limits from limitsInstances, in our case 15 instances from Tabla de Instancias
 
         # Making sure that random is random
-        timestamp = int(time.time())
-        rd.seed(timestamp)
+        rd.seed(3)
 
         # Generate random (x, y) pairs for each limit
         for limit in self.limitsInstances:
@@ -53,6 +50,3 @@ class Config:
             y = rd.randint(y_min, y_max)
             self.instances.append((x, y))
 
-if __name__ == "__main__":
-    deighuahujdasdk = 21 
-    daekjfoajf = 51

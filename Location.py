@@ -13,7 +13,7 @@ import random as rd
 import time
 
 class Location:
-    def __init__(self, x, y):
+    def __init__(self, x, y):   
             # Coordinates to the potential location for the warehouse
             self.x = x
             self.y = y

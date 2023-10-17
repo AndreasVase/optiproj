@@ -28,13 +28,16 @@ for instance in config.instances:
     case.determineEmissions()
     #case.printEmissions()
     case.determineCost()
-    case.toMiniZinc()
+    #case.toMiniZinc()
     #case.printCost()
-    # case.getMap()
+    #case.getMap()
     #case.printCapacity()
+    case.toMiniZinc(filename=f"case{i}.mzn")
+    #time.sleep(1) # Sleep for 1 seconds to make sure that the seed is different
     i += 1
     print("\n")
+    
 
-    # Use the code below to only run one instance, for illustrative purposes
-    if (i == 2):
-        break
+    # # Use the code below to only run one instance, for illustrative purposes
+    # if (i == 2):
+    #     break
