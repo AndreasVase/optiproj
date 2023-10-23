@@ -33,7 +33,7 @@ for instance in config.instances:
     #case.getMap()
     #case.printCapacity()
     case.toMiniZinc(filename=f"case{i}.mzn")
-    #time.sleep(1) # Sleep for 1 seconds to make sure that the seed is different
+    time.sleep(1) # Sleep for 1 seconds to make sure that the seed is different
     i += 1
     print("\n")
     

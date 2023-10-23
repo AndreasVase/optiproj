@@ -41,7 +41,7 @@ class Config:
         # Making a list of tuples based on the limits from limitsInstances, in our case 15 instances from Tabla de Instancias
 
         # Making sure that random is random
-        rd.seed(3)
+        #rd.seed(3)
 
         # Generate random (x, y) pairs for each limit
         for limit in self.limitsInstances:
