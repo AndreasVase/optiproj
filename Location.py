@@ -19,6 +19,7 @@ class Location:
             self.y = y
             self.point = Point(self.x, self.y)
             self.zone = None  # Initialize the zone as None
+            self.instalationcost = None
             self.capacity = None
             self.emission = rd.randint(20, 70)
 
@@ -38,13 +39,18 @@ class Location:
         else:
             raise Exception("All locations need to have a zone")
     
-    def determine_capacity(self, cv, cc):
+    def determine_instalationcost(self, cv, cc):
         if self.zone == Zone.VERDE:
-            self.capacity = cv
+            self.instalationcost = cv
         elif self.zone == Zone.CELESTE:
-            self.capacity = cc
+            self.instalationcost = cc
+    
+    def determine_capacity(self, capacity):
+        if self.zone == Zone.VERDE or self.zone == Zone.CELESTE:
+            self.capacity = capacity
         elif self.zone == Zone.TIENDAS:
             self.capacity = 1
+    
     
         
              

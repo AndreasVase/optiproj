@@ -22,22 +22,17 @@ for instance in config.instances:
     case = Case()
     case.generate_locations(instance[0], instance[1])
     print(f"Case {i}: ")
-    #case.printCase()
+    case.printCase()
     case.determineDistance()
-    #case.printDistances()
+    case.printDistances()
     case.determineEmissions()
-    #case.printEmissions()
+    case.printEmissions()
     case.determineCost()
-    #case.toMiniZinc()
-    #case.printCost()
+    case.printCost()
     #case.getMap()
-    #case.printCapacity()
-    case.toMiniZinc(filename=f"case{i}.mzn")
-    time.sleep(1) # Sleep for 1 seconds to make sure that the seed is different
-    i += 1
+    case.printCapacity()
     print("\n")
     
-
-    # # Use the code below to only run one instance, for illustrative purposes
-    # if (i == 2):
-    #     break
+    # Use the code below to only run one instance, for illustrative purposes
+    if (i == 2):
+        break
