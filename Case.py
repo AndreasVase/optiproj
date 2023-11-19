@@ -68,7 +68,7 @@ class Case:
         self.tiendas_subpolygon = Polygon(tiendas_zone)
     
     def generate_locations(self, I, J):
-        self.capacity = rd.randint(2, J/2)
+        self.capacity = rd.randint(2, int(J/2))
 
         # Generate I locations inside Celeste or Verde
         while len(self.I_locations) < I:
@@ -195,7 +195,7 @@ class Case:
             cost_i = []
             for j in range (len(self.J_locations)):
                 if (self.I_locations[i].zone == Zone.CELESTE or self.I_locations[i].zone == Zone.VERDE):
-                    cost_i.append(1.25 * self.distances[i][j] + self.costinstallation)
+                    cost_i.append(1.25 * self.distances[i][j] + self.I_locations[i].instalationcost)
                 else:
                     raise ValueError("Invalid zone")
             self.cost.append(cost_i)

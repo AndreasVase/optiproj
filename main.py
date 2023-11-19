@@ -32,7 +32,8 @@ for instance in config.instances:
     #case.getMap()
     case.printCapacity()
     print("\n")
-    
+
     # Use the code below to only run one instance, for illustrative purposes
+    i += 1
     if (i == 2):
         break
