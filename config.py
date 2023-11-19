@@ -33,8 +33,8 @@ class Config:
     def setInstances(self):
         # Making a list of tuples based on the limits from limitsInstances, in our case 15 instances from Tabla de Instancias
 
-        # Making sure that random is random
-        #rd.seed(3)
+        # Making sure that we get random numbers each time we run the program
+        rd.seed(3)
 
         # Generate random (x, y) pairs for each limit
         for limit in self.limitsInstances:

@@ -29,7 +29,7 @@ for instance in config.instances:
     case.printEmissions()
     case.determineCost()
     case.printCost()
-    #case.getMap()
+    case.getMap()
     case.printCapacity()
     print("\n")
 

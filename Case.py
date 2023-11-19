@@ -29,6 +29,7 @@ class Case:
         self.distances = []
         self.emissions = []
         self.cost = []
+        
         # Coordinates to the potential location for the warehouse
         # Define the coordinates of the three original zones
         self.celeste_coords = [(0, 0), (0, 600), (600, 600), (600, 0)]
