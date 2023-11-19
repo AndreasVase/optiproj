@@ -29,8 +29,9 @@ for instance in config.instances:
     case.printEmissions()
     case.determineCost()
     case.printCost()
-    case.getMap()
+    # case.getMap()
     case.printCapacity()
+    case.toMiniZinc(filename=f"case{i}.mzn")
     print("\n")
 
     # Use the code below to only run one instance, for illustrative purposes

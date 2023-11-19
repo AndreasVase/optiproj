@@ -29,7 +29,7 @@ class Case:
         self.distances = []
         self.emissions = []
         self.cost = []
-        
+
         # Coordinates to the potential location for the warehouse
         # Define the coordinates of the three original zones
         self.celeste_coords = [(0, 0), (0, 600), (600, 600), (600, 0)]
@@ -215,3 +215,91 @@ class Case:
         for location in self.locations:
             print(f"Location {i}, Zone: {location.zone.name}, capacity: {location.capacity}")
             i += 1
+
+    def toMiniZinc(self, filename):
+        txt = 'I = {};\nJ = {};\nC = {};\nCV = {};\nCC = {};\n'.format(len(self.I_locations), len(self.J_locations), self.capacity, self.cv, self.cc)
+        
+        Oi = []
+        for i in self.I_locations:
+            Oi.append(i.emission)
+        txt += 'O_i = {};\n'.format(Oi)
+
+        Vi = []
+        for i in self.I_locations:
+            if i.zone == Zone.VERDE:
+                Vi.append(1)
+            else:
+                Vi.append(0)
+        txt += 'V_i = {};\n'.format(Vi)
+            
+        txt += 'D_ij = \n['
+        for i in range(len(self.I_locations)):
+            txt += '|'
+            for j in range(len(self.J_locations)):
+                txt += str(int(self.distances[i][j]))
+                if j != len(self.J_locations) - 1:
+                    txt += ', '
+            txt += '\n'
+        txt += '|];\n'
+
+        txt += 'E_ij = \n['
+        for i in range(len(self.I_locations)):
+            txt += '|'
+            for j in range(len(self.J_locations)):
+                txt += str(int(self.emissions[i][j]))
+                if j != len(self.J_locations) - 1:
+                    txt += ', '
+            txt += '\n'
+        txt += '|];\n\n'
+
+        txt += '% Define sets I and J\n'
+        txt += 'int: I;\n'
+        txt += 'int: J;\n\n'
+
+        # Define parameters
+        txt += 'int: C; % Cost of installing a warehouse in all zones\n'
+        txt += 'int: CV; % Capacity in green zone\n'
+        txt += 'int: CC; % Capacity in blue zone\n\n'
+
+        txt += 'array[1..I] of int: O_i; % Emissions per operation for each warehouse i\n'
+        txt += 'array[1..I, 1..J] of int: D_ij; % Distance between warehouse i and store j\n'
+        #txt += 'array[1..I, 1..J] of float: T_ij = [1.25 * D_ij[i, j] | i, j in 1..I, j in 1..J]; % Transportation cost\n' Not in use
+        txt += 'array[1..I, 1..J] of int: E_ij; % Transportation emissions\n'
+        txt += 'array[1..I] of int: V_i; % 1 if warehouse i is in the green zone, 0 if in the blue zone\n'
+
+        txt += '\n% Define decision variables\n'
+        txt += 'array[1..I, 1..J] of var 0..1: X; % 1 if warehouse i supplies store j, 0 otherwise\n'
+        txt += 'array[1..I] of var 0..1: Y;\n\n'
+
+        txt += '% Define constraints\n\n'
+
+        txt += '% Add the constraint to ensure Y_i is 1 if the warehouse I supplies at least one store\n'
+        txt += 'constraint forall(i in 1..I)(\n'
+        txt += '  sum(j in 1..J)(X[i,j]) > 0 -> Y[i] == 1\n'
+        txt += ');\n\n'
+
+        txt += '% Emissions constraint\n'
+        txt += 'constraint sum(i in 1..I, j in 1..J)(E_ij[i, j] * X[i, j]) + sum(i in 1..I)(O_i[i] * Y[i]) <= 500 * J;\n\n'
+
+        txt += '% Assignment constraint\n'
+        txt += 'constraint forall(j in 1..J)(sum(i in 1..I)(X[i, j]) == 1);\n\n'
+
+        txt += '% Green zone capacity constraint\n'
+        txt += 'constraint forall(i in 1..I)(sum(j in 1..J)(X[i, j] * V_i[i]) <= CV);\n\n'
+
+        txt += '% Blue zone capacity constraint\n'
+        txt += 'constraint forall(i in 1..I)(sum(j in 1..J)(X[i, j] * (1 - V_i[i])) <= CC);\n\n'
+
+        txt += '% Solve the optimization problem using a solver\n'
+        txt += '% Define the objective function\n'
+        txt += 'solve minimize sum(i in 1..I, j in 1..J)(1.25 * D_ij[i, j] * X[i, j]) + sum(i in 1..I)(C * Y[i]);\n\n'
+        txt += 'output ["Solution:", ""];\n'
+        txt += 'output ["X = \\n", show2d(X), ";"];\n'
+        txt += 'output ["\\n"];\n'
+        txt += 'output ["Y = ", show(Y), ";"];\n'
+        txt += 'output ["\\n"];\n'
+        txt += 'output ["FO = ", show(sum(i in 1..I, j in 1..J)(1.25 * D_ij[i, j] * X[i, j]) + sum(i in 1..I)(C * Y[i])), \"\\n"];'
+        mzn = open(filename,'w')
+        mzn.write(txt)
+        print(txt)
+        mzn.close()
